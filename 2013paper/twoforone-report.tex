@@ -1,0 +1,201 @@
+\documentclass{article}
+
+\title{Time manipulation in the NBA: \\ Going two-for-one}
+\author{Ryan Menezes and Shane Roberts \\
+UCLA Department of Statistics}
+\date{June 15, 2013}
+
+\usepackage{abstract}
+\usepackage{graphicx}
+
+\usepackage{Sweave}
+\begin{document}
+\input{twoforone-report-concordance}
+
+\maketitle
+
+\begin{abstract}
+NBA teams can use the differential between the shot clock and game clock to their advantage at the end of quarter by going two-for-one. Even if it means rushing the ball up the court to run a play, getting two possessions against the opponent's one pays its dividends by giving teams a few extra points before the buzzer. Using play-by-play data from the 2011-12 NBA regular season, end-of-quarter situations were identified to observe the teams that go two-for-one, those that ignore it, and the point differential for every situation. Teams should always go two-for-one instead of holding the ball for a methodical single possession because it is a riskless strategy that can reward a team greatly. 
+\end{abstract}
+
+\section{Introduction}
+
+In a basketball game, time can be as much of an adversary as the opposing team. However, the clock can become a team's ally if it decides to employ a strategy commonly referred to as the ``two-for-one.''
+
+Take what happened in the final moments of the third quarter in a 2013 NBA playoff game between the Houston Rockets and Oklahoma City Thunder. With the game clock stopped at 35.9 seconds and the 24-second shot clock at its maximum, Rockets guard James Harden stood 90 feet from his basket waiting for an inbounds pass. His teammate softly inbounded the ball and Harden followed it without touching it. Since Harden's defender waited on the other side of the court, and NBA rules dictate that neither clock starts until the first touch after the inbounds pass, Harden let the ball roll at his feet.
+
+\begin{figure}[h]
+\centering
+\includegraphics{hardenwalk.jpg}
+\caption{Houston guard James Harden goes two-for-one against Oklahoma City by letting the ball roll up the court before firing a shot with a 12-second differential between the game clock and shot clock. The Rockets outscored the Thunder 5-2 in this two-for-one.}
+\end{figure}
+
+After 12 seconds of real time during which the ball traveled across more than half the court, Harden grabbed the ball, took one dribble and quickly fired a succesful 3-pointer. In NBA time, the play took 2.7 seconds. The ball went back to the Thunder with 33.2 on the game clock and a full shotclock. The nine-second difference between the two clocks meant that Houston would likely have the last possession of the quarter.
+
+Oklahoma City methodically dribbled the ball up the court before Thunder forward Kevin Durant hit a 2-pointer, giving the Rockets the ball with 9.8 seconds left to run the final play of the third quarter. Just before the buzzer, Rockets guard Aaron Brooks hit a running jumper.
+
+In that sequence of events, the Rockets outscored the Thunder, 5-2. This was an instance of a successfully executed two-for-one. By noting the differential between the game clock and shot clock -- and not wasting game clock time bringing the ball up the court -- the Rockets almost guaranteed themselves a second shot attempt at the end of the quarter by taking a quick shot with their first possession, giving them two chances to score against the Thunder's one. The end result for the Rockets was more than twice as many points.
+
+Is the two-for-one an advantageous strategy? That question is analagous to the following: Is hurrying to take a quick shot in the name of getting a second shot better than taking your time for a single quality possession?
+
+In this paper, we aim to quantify the advantage of going two-for-one by looking at end-of-quarter strategy in the NBA. We also look at which teams employ the strategy the most and which teams decide against it.
+
+\section{Defining the two-for-one}
+For the purposes of this study, the following applies for defining a ``two-for-one'':
+
+\begin{enumerate}
+\item \textbf{A two-for-one can happen in the last 35 seconds of the first, second or third quarter.}
+
+Fourth quarters and overtimes were excluded because end-game strategy differs significantly from game flow in the earlier quarters.
+
+\item \textbf{The team in possession of the ball at the 35-second mark can initiate a two-for-one by ending its possession before the 28-second mark.}
+
+A possession is defined as a sequence of events that concludes with a made or missed field-goal, a turnover or free-throw attempts.
+
+Using the NBA shotclock, which requires the offense to shoot within 24 seconds of getting the ball, a successfully executed two-for-one would leave the initiating team with a possession between four to 11 seconds in length, based on this definition.
+
+\item \textbf{If the team that had the ball at the 35-second mark doesn't end its possession until after the 28-second mark, the initiating team has ignored the two-for-one and the play is classified as a ``one-for-one."}
+
+\end{enumerate}
+
+\section{Data}
+
+End-of-quarter play sequences were extracted from a play-by-play list of 978 regular-season games during the 2011-12 NBA season available on basketballvalue.com. Each sequence was classified as a two-for-one or one-for-one based on the above definition. A new data set was created with a pair of entries for every sequence, noting the type of sequence, how many points each team scored, how many possessions each team had and which team initiated the play. String functions in various R packages were used to parse the data.
+
+\section{Analysis}
+
+Out of the 2,934 end-of-quarter sequences for the 2011-12 season (three for each of the 978 games in the data set), 1,763 were classified as two-for-ones and 1,171 were classified as one-for-ones.
+
+\begin{center}
+\textbf{Table 1: Number of possessions for each type of play}
+\begin{tabular}{|l|l|l|}
+\hline
+ & Two-for-one & One-for-one \\
+\hline
+Initiator & 2.008 & 1.669 \\
+Opponent & 1.470 & 1.142 \\
+\hline
+\end{tabular}
+\end{center}
+
+The mean number of possessions in both situations roughly equals what we would expect from a two-for-one or one-for-one. The opponents' possessions in a two-for-one and the initiators' possessions in a one-for-one is slightly higher than the expectation because many ``last possessions" at the end of the quarter beat the buzzer with time to spare, giving the other team a truly final possession of limited value, like a full-court shot attempt.
+
+\begin{center}
+\textbf{Table 2: Mean point totals for each team}
+\begin{tabular}{|l|l|l|}
+\hline
+ & Two-for-one & One-for-one \\
+\hline
+Initiator & 1.931 pts & 1.336 pts \\
+Opponent & 1.289 pts & 0.980 pts \\
+\hline
+Net & +0.642 pts & +0.355 pts \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{center}
+\textbf{Table 3: Testing against the alternative that \\ initator's point total is greater than opponent's \\}
+\begin{tabular}{|l|l|l|}
+\hline
+\multicolumn{3}{|c|}{One-sided t-test for difference of means} \\
+\hline
+ & Two-for-one & One-for-one \\
+\hline
+Net & +0.642 pts & +0.355 pts \\ \hline
+t-value & 13.0891 & 6.8512 \\
+df & 3343.6 & 2278.2 \\
+significance & p < 2.2e-16 & p = 4.694e-12 \\
+\hline
+\end{tabular}
+\end{center}
+
+Teams initiating a two-for-one on average outscored their opponents by a statistically significant margin of 0.642 points at the end of a particular quarter. If a team went two-for-one over each of the first three quarters, they could gain close to two points on their opponent, which could prove valuable heading in to the fourth quarter of a close game.
+
+However, teams that ignored the two-for-one outscored their opponents by 0.355 points on average, also a significant difference. This means that simply holding the ball the 35 second mark and running a lengthy, quality play that leaves little time for the opponent's final shot has its advantages as well.
+
+\begin{center}
+\textbf{Table 4: Testing against the alternative that \\ two-for-one gain is greater than one-for-one gain \\}
+\begin{tabular}{|l|l|}
+\hline
+\multicolumn{2}{|c|}{One-sided t-test for difference of means} \\
+\multicolumn{2}{|c|}{H-Alt: 2-for-1 margin > 1-for-1 margin} \\
+\hline
+Difference in strategy & +0.287 pts \\ \hline
+t-value & 4.0516 \\
+df & 2800 \\
+significance & p = .00003 \\
+\hline
+\end{tabular}
+\end{center}
+
+If the baseline strategy is simply to hold the ball for a one-for-one, then the relative gain of a two-for-one is 0.287 points per quarter. Though small, the significance of this difference is something that should encourage teams to always go two-for-one. The expected value of a two-for-one situation is such that in a discrete scoring system like that of the NBA, on average every four plays will result in an additional one point. One point can be the difference between the end of a season and hoisting up a championship trophy. This added expected value comes with no expected downside.
+
+\begin{figure}[h]
+\centering
+\includegraphics{histdensity.jpeg}
+\caption{Point differentials of two-for-ones are represented by red and point differentials of one-for-ones are represented by gray in this density plot.}
+\end{figure}
+
+The distributions of the point differentials (Figure 2) are trimodal, with peaks at 0 (one basket each), +2 and -2 (difference of one basket). The density plot shows that the variance of two-for-one outcomes is greater than that of one-for-ones, representing the added risk of that strategy. However, two-for-ones accounted for many of the point differentials larger than +2, the most favorable end-of-quarter outcomes.
+
+Though the two-for-one appears to be the correct strategy at the end of quarters, when examining the execution of two-for-ones on a team-by-team basis (Figure 3), results vary. Teams like the Dallas Mavericks and San Antonio Spurs took advantage of the strategy the most and reaped above-average rewards in terms of point differential. But a handful of teams notched two-for-one margins that were \emph{below} the expected value of a \emph{one-for-one} (Figure 3). Though they ran 58 two-for-ones over the course of the season, the Sacramento Kings managed to get outscored by seven points on those plays. The full team-by-team breakdown can be found in the Appendix.
+
+\begin{figure}
+\centering
+\includegraphics{teamplot.jpeg}
+\caption{Average point differentials on two-for-ones for all 30 NBA teams during the 2011-12 regular season plotted against number of two-for-ones initiated. The horizontal line indicates the expected return of a one-for-one, which seven teams fell below on two-for-ones.}
+\end{figure}
+
+\section{Conclusion}
+ 
+The data show that teams should always be cognizant of the difference between the game clock and shot clock and go two-for-one at the end of quarters. But many teams didn't get a two-for-one return in terms of point differential. Why does this happen?
+
+The answer to this problem likely lies in how the first possession in the two-for-one is executed. It is true that two possessions of any quality is better than one methodical possession, but teams like the Spurs and Mavericks capitalize by getting two meaningful shot attempts. This is likely the result of foresight in game-planning. The Golden State Warriors, who posted the best average margin on two-for-one plays, are armed with accurate marksmen who release their shots quickly and the team uses this to its advantage. When considering the two-for-one strategy, coaches should properly draw up "quick-hitter" plays that are designed to get a shot in a hurry, and analyze the strengths of their players to see if they have any players, like Harden, who can quickly get a shot off.
+
+In the example above, Harden showed how valuable those skills can be to properly executing a two-for-one. His play stretched Houston's lead from nine to 12 before the fourth quarter began, part of second upset win for the No. 8 seed against a No. 1 in the series.
+
+In the NBA, teams are looking to gain every possible advantage they can. Using the clock to properly run a two-for-one is just another way to get an edge.
+
+\section*{Appendix}
+
+\textbf{Table 5: Teams ranked by two-for-ones initiated (2011-12 season)}
+\begin{tabular}{|l|l|l|l|l|l|l|}
+\hline
+& Team & 2for1s & Pts & OPts & Margin & Avg Marg \\ 
+\hline
+1 & Dallas Mavericks & 80 & 155 & 70 & +85 & +1.06 \\
+2 & San Antonio Spurs & 78 & 164 & 77 & +87 & +1.12 \\
+3 & Golden State Warriors & 70 & 169 & 58 & +111 & +1.59 \\
+4 & Minnesota Timberwolves & 69 & 150 & 99 & +51 & +0.74 \\
+5 & Los Angeles Clippers & 65 & 113 & 80 & +33 & +0.51 \\
+6 & Houston Rockets & 64 & 107 & 78 & +29 & +0.45 \\
+7 & Oklahoma City Thunder & 64 & 122 & 78 & +44 & +0.69 \\
+8 & Utah Jazz & 63 & 119 & 75 & +44 & +0.70 \\
+9 & Chicago Bulls & 62 & 121 & 65 & +56 & +0.90 \\
+10 & Atlanta Hawks & 61 & 123 & 59 & +64 & +1.05 \\
+11 & Miami Heat & 61 & 125 & 86 & +39 & +0.64 \\
+12 & Cleveland Cavaliers & 60 & 106 & 82 & +24 & +0.40 \\
+13 & Charlotte Bobcats & 59 & 127 & 100 & +27 & +0.46 \\
+14 & Philadelphia 76ers & 59 & 124 & 75 & +49 & +0.83 \\
+15 & Phoenix Suns & 58 & 130 & 73 & +57 & +0.98 \\
+16 & Sacramento Kings & 58 & 73 & 80 & -7 & -0.12 \\
+17 & New Jersey Nets & 56 & 103 & 85 & +18 & +0.32 \\
+18 & New York Knicks & 56 & 96 & 78 & +18 & +0.32 \\
+19 & Washington Wizards & 56 & 110 & 69 & +41 & +0.73 \\
+20 & Indiana Pacers & 55 & 101 & 67 & +34 & +0.62 \\
+21 & Boston Celtics & 54 & 95 & 80 & +15 & +0.28 \\
+22 & New Orleans Hornets & 54 & 96 & 69 & +27 & +0.50 \\
+23 & Toronto Raptors & 54 & 88 & 69 & +19 & +0.35 \\
+24 & Denver Nuggets & 53 & 121 & 92 & +29 & +0.55 \\
+25 & Milwaukee Bucks & 52 & 114 & 78 & +36 & +0.69 \\
+26 & Orlando Magic & 52 & 80 & 49 & +31 & +0.60 \\
+27 & Detroit Pistons & 51 & 115 & 81 & +34 & +0.67 \\
+28 & Memphis Grizzlies & 48 & 106 & 93 & +13 & +0.27 \\
+29 & Portland Trailblazers & 48 & 64 & 63 & +1 & +0.02 \\
+% & League Average & 58.8 & 113.5 & 75.8 & +37.7 & +0.61 \\
+30 & Los Angeles Lakers & 43 & 87 & 65 & +22 & +0.51 \\
+\hline
+\end{tabular}
+
+\end{document}
