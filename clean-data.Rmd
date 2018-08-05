@@ -1,0 +1,58 @@
+---
+title: "cleaning possession data"
+author: "Ryan Menezes"
+date: "August 4, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+getwd()
+```
+
+```{r setup, include=FALSE}
+library(tidyverse)
+```
+
+```{r}
+if (!file.exists('possession_details_00217.csv')) {
+  unzip('possession_details_00217.csv.zip')
+}
+file.exists('possession_details_00217.csv')
+```
+
+```{r}
+pbp <- read_csv('possession_details_00217.csv')
+```
+
+```{r}
+plays <- pbp %>% 
+  select(GameId:EndTime, StartScoreDifferential) %>% 
+  arrange(GameId, Period, PossessionNumber)
+```
+
+How many possessions a game?
+```{r}
+plays %>%
+  filter(Period <= 4) %>%
+  group_by(GameId) %>% 
+  summarise(count=n()) %>% 
+  summarise(mean(count))
+```
+
+Possesions by quarter
+```{r}
+plays %>%
+  filter(Period <= 4) %>%
+  group_by(GameId, Period) %>% 
+  summarise(plays=n(),
+            games=n_distinct(GameId)) %>% 
+  group_by(Period) %>% 
+  summarise(sum(plays)/sum(games))
+```
+
+```{r}
+lineups <- pbp %>% 
+  select(GameId:PossessionNumber, PlayerStats) %>% 
+  arrange(GameId, Period, PossessionNumber)
+```
+
